@@ -92,6 +92,8 @@ namespace WordsCombinations
 
             this.CsvPath = filePath;
         }
+
+
         void TXTToCSV()
         {
 
@@ -102,6 +104,7 @@ namespace WordsCombinations
                 {
                     throw new Exception("TXT Source not define");
                 }
+
 
                 List<string> temp = new List<string>();
                 List<string> distinct = new List<string>();
@@ -122,13 +125,14 @@ namespace WordsCombinations
                 string[] tempWords;
                 int startAlf = Convert.ToInt32("0400", 16);
                 int endtAlf = Convert.ToInt32("04FF", 16);
+                StreamReader source = new StreamReader($"{this.TxtPath}", Encoding.GetEncoding(866));
 
                 //foreach (string name in textfiles)
                 {
                     try
                     {
                         //Pass the file path and file name to the StreamReader constructor
-                        StreamReader source = new StreamReader($"{this.TxtPath}", Encoding.GetEncoding(866));
+
                         line = source.ReadLine();
                         //Continue to read until you reach end of file
                         while (line != null)
@@ -147,6 +151,12 @@ namespace WordsCombinations
                         targetTmp.Close();
                         Console.WriteLine(countAll);
                     }
+
+                    catch (FileNotFoundException ex)
+                    {
+                        // Write error.
+                        Console.WriteLine(ex);
+                    }
                     catch (Exception e)
                     {
                         Console.WriteLine("Exception: " + e.Message);
@@ -162,51 +172,90 @@ namespace WordsCombinations
 
             }
         }
+
         string[] stringArrayFromCSV()
         {
-            try
+
+            if (this.CsvPath != "")
             {
-                if (this.CsvPath != "")
+
+                try
                 {
+                    // Read in nonexistent file.
                     StreamReader source = new StreamReader($"{this.CsvPath}");
                     string[] arrayWord = source.ReadLine().Split(this.splitChars);
                     return arrayWord;
                 }
-                else
+                catch (FileNotFoundException ex)
                 {
-                    throw new Exception("PathTo CSV File is empty");
+                    // Write error.
+                    Console.WriteLine(ex);
                 }
             }
-            catch (Exception e)
+            else
             {
-
+                Console.WriteLine("PathTo CSV File not exist");
             }
+
             return new string[] { };
         }
-        void arraryStringToCSVFile(string[] words)
+
+        string[] stringArrayFromTXT()
         {
-
-            try
+            if (this.TxtPath == "")
             {
-                if (this.CsvPath != "")
-                {
-                    StreamWriter targetFile = new StreamWriter(this.CsvPath);
-                    foreach (string word in words)
-                    {
-                        targetFile.Write(word + ";");
-                    }
-                    targetFile.Close();
-                }
-                else
-                {
-                    throw new Exception("PathTo CSV File is empty");
-                }
+                Console.WriteLine("TXT Source not define");
+                return new string[] { };
             }
-            catch (Exception e)
+            string CurrentDirectory = Directory.GetCurrentDirectory();
+            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            //System.Console.InputEncoding = Encoding.GetEncoding(1251);
+            //txt in UTF_16BE
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            string[] tempWords = new string[] { }; ;
+            string? line = "";
+            StreamReader source = new StreamReader($"{this.TxtPath}", Encoding.GetEncoding(866));
             {
-
+                try
+                {
+                    //Pass the file path and file name to the StreamReader constructor
+                    line = source.ReadLine(); //Continue to read until you reach end of file
+                    while (line != null)
+                    {
+                        line += source.ReadLine() + ";";
+                    }
+                    if (line != null)
+                    {
+                        tempWords = line.Split(this.splitChars);
+                    }
+                    return tempWords;
+                }
+                catch (FileNotFoundException ex)
+                {
+                    Console.WriteLine(ex);
+                    return new string[] { };
+                }
             }
         }
+
+
+        void arraryStringToCSVFile(string[] words)
+        {
+            if (this.CsvPath != "")
+            {
+                StreamWriter targetFile = new StreamWriter(this.CsvPath);
+                foreach (string word in words)
+                {
+                    targetFile.Write(word + ";");
+                }
+                targetFile.Close();
+            }
+            else
+            {
+                throw new Exception("PathTo CSV File is empty");
+            }
+        }
+    
 
         string[] russianToLatin(string[] words)
         {
@@ -277,6 +326,10 @@ namespace WordsCombinations
             }
             return wordsFromLatinica;
         }
+
+
+
+
         string[] LatinNotOfficalToRussin(string[] latinWords)
         {
             int arraylenght = latinWords.Length;
