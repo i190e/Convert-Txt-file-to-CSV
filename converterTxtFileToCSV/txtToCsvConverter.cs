@@ -14,7 +14,6 @@ namespace WordsCombinations
         private string TxtPath;
         private string CsvPath;
         private string CompareCsvPath;
-
         private char[] splitChars;
         private char[] russianAlphabet;
         private char[] englishAlphabet;
@@ -23,7 +22,7 @@ namespace WordsCombinations
         private char[] QwertyAlphabetEn;
         private char[] QwertyAlphabetRu;
 
-        //проверку на заполненость пути файла в функциях (без диалога actionSelection()) чтобы работало без этой фйнкции как .lib
+        //проверку на заполненость пути файла в функциях (без диалога actionSelection()) чтобы работало без этой фйнкции как .dll
 
         protected string ReadLinePath(string? msg) //Console Function ReadLine (PathToFileName) With Dialog And Exeption
         {
@@ -92,8 +91,6 @@ namespace WordsCombinations
 
             this.CsvPath = filePath;
         }
-
-
         void TXTToCSV()
         {
 
@@ -172,7 +169,37 @@ namespace WordsCombinations
 
             }
         }
-
+        string flipCharArray(string word, char[] alphabet, char[] flipedAlphabet)
+        {
+            string tempWord = "";
+            int alphabetLenght = alphabet.Length;
+            foreach (char ch in word)
+            {
+                for (int i = 0; i < alphabetLenght; i++)
+                { 
+                    if (alphabet[i] == ch)
+                        tempWord += flipedAlphabet[i];
+                    break;
+                }                       
+            }           
+            return tempWord; 
+        }
+        string flipStringArray(string word, string[] alphabet, string[] flipedAlphabet)
+        {
+            string tempWord = "";
+            string[] tempChars = word.Split('\'');
+            int alphabetLenght = alphabet.Length;
+            foreach (string wordChar in tempChars)
+            {
+                for (int i = 0; i < alphabetLenght; i++)
+                {
+                    if (alphabet[i] == wordChar)
+                        tempWord += flipedAlphabet[i];
+                    break;
+                }
+            }
+            return tempWord;
+        }
         string[] stringArrayFromCSV()
         {
 
@@ -199,7 +226,6 @@ namespace WordsCombinations
 
             return new string[] { };
         }
-
         string[] stringArrayFromTXT()
         {
             if (this.TxtPath == "")
@@ -237,8 +263,6 @@ namespace WordsCombinations
                 }
             }
         }
-
-
         void arraryStringToCSVFile(string[] words)
         {
             if (this.CsvPath != "")
@@ -254,9 +278,7 @@ namespace WordsCombinations
             {
                 throw new Exception("PathTo CSV File is empty");
             }
-        }
-    
-
+        } 
         string[] russianToLatin(string[] words)
         {
             int arraylenght = words.Length;
@@ -326,10 +348,6 @@ namespace WordsCombinations
             }
             return wordsFromLatinica;
         }
-
-
-
-
         string[] LatinNotOfficalToRussin(string[] latinWords)
         {
             int arraylenght = latinWords.Length;
