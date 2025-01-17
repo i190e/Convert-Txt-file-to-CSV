@@ -15,12 +15,12 @@ namespace WordsCombinations
         private string CsvPath;
         private string CompareCsvPath;
         private char[] splitChars;
-        private char[] russianAlphabet;
-        private char[] englishAlphabet;
+        private string[] russianAlphabet;
+        private string[] englishAlphabet;
         private string[] latinAlphabet;
         private string[] LatinNotOffical;
-        private char[] QwertyAlphabetEn;
-        private char[] QwertyAlphabetRu;
+        private string[] QwertyAlphabetEn;
+        private string[] QwertyAlphabetRu;
 
         //проверку на заполненость пути файла в функциях (без диалога actionSelection()) чтобы работало без этой фйнкции как .dll
 
@@ -194,11 +194,11 @@ namespace WordsCombinations
                 for (int i = 0; i < alphabetLenght; i++)
                 {
                     if (alphabet[i] == wordChar)
-                        tempWord += flipedAlphabet[i];
+                        tempWord += flipedAlphabet[i] + "'";
                     break;
                 }
             }
-            return tempWord;
+            return tempWord.Substring(tempWord.Length - 1); ;
         }
         string[] stringArrayFromCSV()
         {
@@ -278,98 +278,58 @@ namespace WordsCombinations
             {
                 throw new Exception("PathTo CSV File is empty");
             }
-        } 
+        }
         string[] russianToLatin(string[] words)
         {
             int arraylenght = words.Length;
             string[] wordsOnLatinica = new string[arraylenght];
-
-            string wordOnLatinica = "";
+            string tempWord = "";
             for (int i = 0; i < arraylenght; i++)
             {
-                foreach (char ch in words[i])
-                {
-                    for (int j = 0; j < 33; j++)
-                    {
-                        if (ch == this.russianAlphabet[j])
-                        {
-                            wordOnLatinica += this.latinAlphabet[j] + "'";
-                        }
-                    }
-                }
-                wordsOnLatinica[i] = wordOnLatinica.Substring(wordOnLatinica.Length - 1);
-                wordOnLatinica = "";
+                wordsOnLatinica[i] = flipStringArray(words[i], russianAlphabet, latinAlphabet);
+                    wordsOnLatinica[i] = tempWord;
+                tempWord = "";
             }
             return wordsOnLatinica;
-        }
+        }     
         string[] russianToLatinNotOffical(string[] words)
         {
             int arraylenght = words.Length;
             string[] wordsOnLatinica = new string[arraylenght];
-
-            string wordOnLatinica = "";
+            string tempWord = "";
             for (int i = 0; i < arraylenght; i++)
             {
-                foreach (char ch in words[i])
-                {
-                    for (int j = 0; j < 33; j++)
-                    {
-                        if (ch == this.russianAlphabet[j])
-                        {
-                            wordOnLatinica += this.LatinNotOffical[j];
-                        }
-                    }
-                }
-                wordsOnLatinica[i] = wordOnLatinica.Substring(wordOnLatinica.Length - 1);
-                wordOnLatinica = "";
+                wordsOnLatinica[i] = flipStringArray(words[i], russianAlphabet, LatinNotOffical);
+                wordsOnLatinica[i] = tempWord;
+                tempWord = "" ;
             }
             return wordsOnLatinica;
         }
         string[] LatinToRussin(string[] latinWords)
         {
             int arraylenght = latinWords.Length;
-            string[] wordsFromLatinica = new string[arraylenght];
-            string wordFromLatinica = "";
+            string[] wordsOnRussian = new string[arraylenght];
+            string tempWord = "";
             for (int i = 0; i < arraylenght; i++)
             {
-                string[] latinChars = latinWords[i].Split('\'');
-                foreach (string ch in latinChars)
-                {
-                    for (int j = 0; j < 33; j++)
-                    {
-                        if (ch == this.latinAlphabet[j])
-                        {
-                            wordFromLatinica += this.russianAlphabet[j];
-                        }
-                    }
-                }
-                wordsFromLatinica[i] = wordFromLatinica;
-                wordFromLatinica = "";
+                wordsOnRussian[i] = flipStringArray(latinWords[i], latinAlphabet,russianAlphabet);
+                wordsOnRussian[i] = tempWord;
+                tempWord = "";
             }
-            return wordsFromLatinica;
+            return wordsOnRussian;
         }
         string[] LatinNotOfficalToRussin(string[] latinWords)
         {
             int arraylenght = latinWords.Length;
-            string[] wordsFromLatinica = new string[arraylenght];
-            string wordFromLatinica = "";
+            string[] wordsOnRussian = new string[arraylenght];
+            string tempWord = "";
             for (int i = 0; i < arraylenght; i++)
             {
-                string[] latinChars = LatinNotOffical[i].Split('\'');
-                foreach (string ch in latinChars)
-                {
-                    for (int j = 0; j < 33; j++)
-                    {
-                        if (ch == this.latinAlphabet[j])
-                        {
-                            wordFromLatinica += this.russianAlphabet[j];
-                        }
-                    }
-                }
-                wordsFromLatinica[i] = wordFromLatinica;
-                wordFromLatinica = "";
+                wordsOnRussian[i] = flipStringArray(latinWords[i], LatinNotOffical, russianAlphabet);
+                wordsOnRussian[i] = tempWord;
+                tempWord = "";
             }
-            return wordsFromLatinica;
+            return wordsOnRussian;
         }
         string[] interselectWords(string[] wordsA, string[] wordsB)
         {
@@ -459,16 +419,18 @@ namespace WordsCombinations
          * 
          * 
          */
-
+        
         Functions(string csvPath, string txtPath = "")
         {
+
             this.splitChars = new char[] { ' ', ',', '.', '!', '?', ';', '/', '|', '<', '>', '"', ':', '~', '`', '#', '%', '^', '&', '*', '(', ')', '{', '}', '-', '+', '=', '_', '\\', '\t', '\n', '\t', '\r', };
-            this.russianAlphabet = new char[] { 'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я' };
-            this.englishAlphabet = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+
+            this.russianAlphabet = new string[] { "а", "б", "в", "г", "д", "е", "ё", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я" };
+            this.englishAlphabet = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
             this.latinAlphabet = new string[] { "a", "b", "v", "g", "d", "e", "e", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p", "r", "c", "t", "u", "f", "kh", "ts", "ch", "sh", "shch", "", "y", "", "e", "yu", "ya" };
             this.LatinNotOffical = new string[] { "a", "b", "v", "g", "d", "e", "e", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p", "r", "c", "t", "u", "f", "kh", "ts", "ch", "sh", "shch", "", "y", "", "e", "yu", "ya" };
-            this.QwertyAlphabetEn = new char[] { 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/' };
-            this.QwertyAlphabetRu = new char[] { 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '\\', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '.' };
+            this.QwertyAlphabetEn = new string[] { "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "\'", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/" };
+            this.QwertyAlphabetRu = new string[] { "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ", "\\", "ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", "." };
             this.CsvPath = csvPath;
             this.TxtPath = txtPath;
             this.CompareCsvPath = "";
