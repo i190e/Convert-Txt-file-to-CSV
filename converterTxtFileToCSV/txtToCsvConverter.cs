@@ -218,57 +218,83 @@ namespace WordsCombinations
                 throw new Exception("PathTo CSV File is empty");
             }
         }
-        string[] russianToLatin(string[] words)
+        string[] russianToLatin(string[] russianWords)
         {
-            int arraylenght = words.Length;
-            string[] wordsOnLatinica = new string[arraylenght];
+            int arraylenght = russianWords.Length;
+            string[] tempWords = new string[arraylenght];
             string tempWord = "";
             for (int i = 0; i < arraylenght; i++)
             {
-                wordsOnLatinica[i] = flipStringArray(words[i], russianAlphabet, latinAlphabet);
-                    wordsOnLatinica[i] = tempWord;
+                tempWords[i] = flipStringArray(russianWords[i], russianAlphabet, latinAlphabet);
+                tempWords[i] = tempWord;
                 tempWord = "";
             }
-            return wordsOnLatinica;
+            return tempWords;
         }     
-        string[] russianToLatinNotOffical(string[] words)
+        string[] russianToLatinNotOffical(string[] russianWords)
         {
-            int arraylenght = words.Length;
-            string[] wordsOnLatinica = new string[arraylenght];
+            int arraylenght = russianWords.Length;
+            string[] tempWords = new string[arraylenght];
             string tempWord = "";
             for (int i = 0; i < arraylenght; i++)
             {
-                wordsOnLatinica[i] = flipStringArray(words[i], russianAlphabet, LatinNotOffical);
-                wordsOnLatinica[i] = tempWord;
+                tempWords[i] = flipStringArray(russianWords[i], russianAlphabet, LatinNotOffical);
+                tempWords[i] = tempWord;
                 tempWord = "" ;
             }
-            return wordsOnLatinica;
+            return tempWords;
         }
         string[] LatinToRussin(string[] latinWords)
         {
             int arraylenght = latinWords.Length;
-            string[] wordsOnRussian = new string[arraylenght];
+            string[] tempWords = new string[arraylenght];
             string tempWord = "";
             for (int i = 0; i < arraylenght; i++)
             {
-                wordsOnRussian[i] = flipStringArray(latinWords[i], latinAlphabet,russianAlphabet);
-                wordsOnRussian[i] = tempWord;
+                tempWords[i] = flipStringArray(latinWords[i], latinAlphabet,russianAlphabet);
+                tempWords[i] = tempWord;
                 tempWord = "";
             }
-            return wordsOnRussian;
+            return tempWords;
         }
         string[] LatinNotOfficalToRussin(string[] latinWords)
         {
             int arraylenght = latinWords.Length;
-            string[] wordsOnRussian = new string[arraylenght];
+            string[] tempWords = new string[arraylenght];
             string tempWord = "";
             for (int i = 0; i < arraylenght; i++)
             {
-                wordsOnRussian[i] = flipStringArray(latinWords[i], LatinNotOffical, russianAlphabet);
-                wordsOnRussian[i] = tempWord;
+                tempWords[i] = flipStringArray(latinWords[i], LatinNotOffical, russianAlphabet);
+                tempWords[i] = tempWord;
                 tempWord = "";
             }
-            return wordsOnRussian;
+            return tempWords;
+        }
+        string[] russianToEnglish(string[] russianWords)
+        {
+            int arraylenght = russianWords.Length;
+            string[] tempWords = new string[arraylenght];
+            string tempWord = "";
+            for (int i = 0; i < arraylenght; i++)
+            {
+                tempWords[i] = flipStringArray(russianWords[i], russianAlphabet, englishAlphabet);
+                tempWords[i] = tempWord;
+                tempWord = "";
+            }
+            return tempWords;
+        }
+        string[] englishTorussian(string[] englishWords)
+        {
+            int arraylenght = englishWords.Length;
+            string[] tempWords = new string[arraylenght];
+            string tempWord = "";
+            for (int i = 0; i < arraylenght; i++)
+            {
+                tempWords[i] = flipStringArray(englishWords[i], russianAlphabet, latinAlphabet);
+                tempWords[i] = tempWord;
+                tempWord = "";
+            }
+            return tempWords;
         }
         string[] interselectWords(string[] wordsA, string[] wordsB)
         {
@@ -328,6 +354,7 @@ namespace WordsCombinations
         {
             return stringArrayFromCSV().Count();
         }
+
 
         /*
          * 'ConvertTxt' to enter filepath to file.txt
