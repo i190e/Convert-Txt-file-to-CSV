@@ -15,15 +15,14 @@ namespace WordsCombinations
         private string CsvPath;
         private string CompareCsvPath;
         private char[] splitChars;
+        private char splitCsvChar;
         private string[] russianAlphabet;
         private string[] englishAlphabet;
         private string[] latinAlphabet;
         private string[] LatinNotOffical;
         private string[] QwertyAlphabetEn;
         private string[] QwertyAlphabetRu;
-
         //проверку на заполненость пути файла в функциях (без диалога actionSelection()) чтобы работало без этой фйнкции как .dll
-
         protected string ReadLinePath(string? msg) //Console Function ReadLine (PathToFileName) With Dialog And Exeption
         {
             string? tmp;
@@ -51,7 +50,7 @@ namespace WordsCombinations
             return "";
         }
 
-        void SetTxtPatrh(string filePath)
+        void SetTxtPath(string filePath)
         {
 
             foreach (char a in filePath)
@@ -70,7 +69,7 @@ namespace WordsCombinations
             }
             this.TxtPath = filePath;
         }
-        void SetCsvPatrh(string filePath)
+        void SetCsvPath(string filePath)
         {
             foreach (char a in filePath)
             {
@@ -91,126 +90,15 @@ namespace WordsCombinations
 
             this.CsvPath = filePath;
         }
-        void TXTToCSV()
-        {
-
-            try
-            {
-
-                if (this.TxtPath == "")
-                {
-                    throw new Exception("TXT Source not define");
-                }
-
-
-                List<string> temp = new List<string>();
-                List<string> distinct = new List<string>();
-                List<string> distinctSort = new List<string>();
-                String line = "";
-                int countAll = 0;
-                string CurrentDirectory = Directory.GetCurrentDirectory();
-                //string pattern = @"\b(\p{IsGreek}+(\s)?)+\p{Pd}\s(\p{IsBasicLatin}+(\s)?)+";
-                //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                //System.Console.InputEncoding = Encoding.GetEncoding(1251);
-                //txt in UTF_16BE
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                Console.WriteLine("Current Path");
-                Console.WriteLine(CurrentDirectory);
-                //string[] textfiles= Directory.GetFiles(SelectFileDialog());            
-                StreamWriter targetTmp = new StreamWriter(this.CsvPath);
-                //textfiles[0] = SelectFileDialog();
-                string[] tempWords;
-                int startAlf = Convert.ToInt32("0400", 16);
-                int endtAlf = Convert.ToInt32("04FF", 16);
-                StreamReader source = new StreamReader($"{this.TxtPath}", Encoding.GetEncoding(866));
-
-                //foreach (string name in textfiles)
-                {
-                    try
-                    {
-                        //Pass the file path and file name to the StreamReader constructor
-
-                        line = source.ReadLine();
-                        //Continue to read until you reach end of file
-                        while (line != null)
-                        {
-                            line += source.ReadLine() + ";";
-                        }
-
-                        tempWords = line.Split(this.splitChars);
-
-                        foreach (string name in tempWords)
-                        {
-                            targetTmp.Write(name + ";");
-                        }
-                        //close the file
-                        source.Close();
-                        targetTmp.Close();
-                        Console.WriteLine(countAll);
-                    }
-
-                    catch (FileNotFoundException ex)
-                    {
-                        // Write error.
-                        Console.WriteLine(ex);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Exception: " + e.Message);
-                    }
-                    finally
-                    {
-                        Console.WriteLine("Executing finally block.");
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-        string flipCharArray(string word, char[] alphabet, char[] flipedAlphabet)
-        {
-            string tempWord = "";
-            int alphabetLenght = alphabet.Length;
-            foreach (char ch in word)
-            {
-                for (int i = 0; i < alphabetLenght; i++)
-                { 
-                    if (alphabet[i] == ch)
-                        tempWord += flipedAlphabet[i];
-                    break;
-                }                       
-            }           
-            return tempWord; 
-        }
-        string flipStringArray(string word, string[] alphabet, string[] flipedAlphabet)
-        {
-            string tempWord = "";
-            string[] tempChars = word.Split('\'');
-            int alphabetLenght = alphabet.Length;
-            foreach (string wordChar in tempChars)
-            {
-                for (int i = 0; i < alphabetLenght; i++)
-                {
-                    if (alphabet[i] == wordChar)
-                        tempWord += flipedAlphabet[i] + "'";
-                    break;
-                }
-            }
-            return tempWord.Substring(tempWord.Length - 1); ;
-        }
         string[] stringArrayFromCSV()
         {
-
             if (this.CsvPath != "")
             {
-
                 try
                 {
                     // Read in nonexistent file.
                     StreamReader source = new StreamReader($"{this.CsvPath}");
-                    string[] arrayWord = source.ReadLine().Split(this.splitChars);
+                    string[] arrayWord = source.ReadLine().Split(this.splitCsvChar);
                     return arrayWord;
                 }
                 catch (FileNotFoundException ex)
@@ -223,7 +111,6 @@ namespace WordsCombinations
             {
                 Console.WriteLine("PathTo CSV File not exist");
             }
-
             return new string[] { };
         }
         string[] stringArrayFromTXT()
@@ -262,6 +149,58 @@ namespace WordsCombinations
                     return new string[] { };
                 }
             }
+        }
+        void stringArrayToCSV(string[] tempWords)
+        {
+            StreamWriter targetTmp = new StreamWriter(this.CsvPath);
+            try
+            {
+                foreach (string name in tempWords)
+                {
+                    targetTmp.Write(name + ";");
+                }
+                targetTmp.Close();                //close the file
+            }
+            catch (FileNotFoundException ex)
+            {
+                // Write error.
+                Console.WriteLine(ex);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception: " + e.Message);
+            }
+        }
+        string flipCharArray(string word, char[] alphabet, char[] flipedAlphabet)
+        {
+            string tempWord = "";
+            int alphabetLenght = alphabet.Length;
+            foreach (char ch in word)
+            {
+                for (int i = 0; i < alphabetLenght; i++)
+                { 
+                    if (alphabet[i] == ch)
+                        tempWord += flipedAlphabet[i];
+                    break;
+                }                       
+            }           
+            return tempWord; 
+        }
+        string flipStringArray(string word, string[] alphabet, string[] flipedAlphabet)
+        {
+            string tempWord = "";
+            string[] tempChars = word.Split('\'');
+            int alphabetLenght = alphabet.Length;
+            foreach (string wordChar in tempChars)
+            {
+                for (int i = 0; i < alphabetLenght; i++)
+                {
+                    if (alphabet[i] == wordChar)
+                        tempWord += flipedAlphabet[i] + "'";
+                    break;
+                }
+            }
+            return tempWord.Substring(tempWord.Length - 1); ;
         }
         void arraryStringToCSVFile(string[] words)
         {
@@ -416,15 +355,13 @@ namespace WordsCombinations
          * interselect to search interselect word in CSV file
          * interselect to search interselect words in CSV file
          * 
-         * 
-         * 
          */
         
         Functions(string csvPath, string txtPath = "")
         {
 
             this.splitChars = new char[] { ' ', ',', '.', '!', '?', ';', '/', '|', '<', '>', '"', ':', '~', '`', '#', '%', '^', '&', '*', '(', ')', '{', '}', '-', '+', '=', '_', '\\', '\t', '\n', '\t', '\r', };
-
+            this.splitCsvChar = ';';
             this.russianAlphabet = new string[] { "а", "б", "в", "г", "д", "е", "ё", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я" };
             this.englishAlphabet = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
             this.latinAlphabet = new string[] { "a", "b", "v", "g", "d", "e", "e", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p", "r", "c", "t", "u", "f", "kh", "ts", "ch", "sh", "shch", "", "y", "", "e", "yu", "ya" };
