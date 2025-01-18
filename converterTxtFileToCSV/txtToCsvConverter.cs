@@ -296,6 +296,33 @@ namespace WordsCombinations
             }
             return tempWords;
         }
+        string[] QwertyToRussian(string[] englishWords)
+        {
+            int arraylenght = englishWords.Length;
+            string[] tempWords = new string[arraylenght];
+            string tempWord = "";
+            for (int i = 0; i < arraylenght; i++)
+            {
+                tempWords[i] = flipStringArray(englishWords[i], QwertyAlphabetEn, QwertyAlphabetRu);
+                tempWords[i] = tempWord;
+                tempWord = "";
+            }
+            return tempWords;
+        }
+        string[] QwertyToEnglish(string[] russianWords)
+        {
+            int arraylenght = russianWords.Length;
+            string[] tempWords = new string[arraylenght];
+            string tempWord = "";
+            for (int i = 0; i < arraylenght; i++)
+            {
+                tempWords[i] = flipStringArray(russianWords[i], QwertyAlphabetRu, QwertyAlphabetEn);
+                tempWords[i] = tempWord;
+                tempWord = "";
+            }
+            return tempWords;
+        }
+
         string[] interselectWords(string[] wordsA, string[] wordsB)
         {
             int arrayAlenght = wordsA.Length;
