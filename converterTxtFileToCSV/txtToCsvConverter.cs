@@ -90,6 +90,27 @@ namespace WordsCombinations
 
             this.CsvPath = filePath;
         }
+        void PathToCompareCsvFile(string filePath)
+        {
+            foreach (char a in filePath)
+            {
+                if (a == '\\')
+                {
+                    filePath += "\\" + "\\";
+                }
+                else
+                    filePath += a;
+            }
+
+
+            if (filePath.Length > 260)
+            {
+                //Console.WriteLine($"Длина строки пути файла {InternalPath}, максимальная длина строки пути файла в Windows 260");
+                throw new Exception($"Длина строки пути файла {filePath}, максимальная длина строки пути файла в Windows 260");
+            }
+
+            this.CompareCsvPath = filePath;
+        }
         string[] stringArrayFromCSV()
         {
             if (this.CsvPath != "")
@@ -363,7 +384,7 @@ namespace WordsCombinations
                 return word;
             return null;
         }
-        string[] palidromWordFromCSV()
+        string[] palidromWordsFromCSV()
         {
             List<string> wordsPalidroms = new List<string>();
             foreach (string word in stringArrayFromCSV())
@@ -407,7 +428,7 @@ namespace WordsCombinations
          * 'flipEnRu' to search interselect words in en CSV file end flip ru alphabet worlds from ru dictionary worlds
          * 'flipEnRu' to flip words in file on english to russian keyboard layout
          * interselect to search interselect word in CSV file
-         * interselect to search interselect words in CSV file
+         * 
          * 
          */
         
